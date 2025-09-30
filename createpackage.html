@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Wedding Package - Luxury Haven Hotel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #c19a6b;
+            --success: #28a745;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #1e2a4a;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, var(--secondary), var(--dark));
+            color: var(--light);
+            overflow-x: hidden;
+        }
+
+        .admin-panel {
+            display: flex;
+            width: 100%;
+        }
+
+        .menu {
+            background-color: rgba(255, 255, 255, 0.1);
+            width: 250px;
+            padding: 20px;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            animation: slideInLeft 0.8s ease;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--light);
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        .menu a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .menu i {
+            font-size: 1.2em;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            width: 500px;
+            color: var(--dark);
+            margin: 40px auto;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--dark);
+            margin-bottom: 25px;
+            font-size: 26px;
+            font-weight: bold;
+            animation: fadeIn 1s ease;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s, box-shadow 0.3s;
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 10px rgba(193, 154, 107, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        button:hover {
+            background: #a57c51;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .error {
+            color: var(--danger);
+            font-size: 14px;
+            display: none;
+            margin-top: 5px;
+            animation: shake 0.4s ease;
+        }
+
+        #formError {
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-panel {
+                flex-direction: column;
+            }
+
+            .menu {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .container {
+                width: 95%;
+                margin: 20px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="admin-panel">
+    <div class="menu">
+        <a href="/api/manage"><i class="fas fa-users-cog"></i> Manage Users</a>
+        <a href="/api/rooms-halls/view"><i class="fas fa-hotel"></i> Edit Halls</a>
+        <a href="/api/rooms-halls/add"><i class="fas fa-plus-circle"></i> Add Halls</a>
+        <a href="/api/calendarview/add"><i class="fas fa-calendar-plus"></i> Add Calendar View</a>
+        <a href="/api/rooms-halls/view"><i class="fas fa-book"></i> Bookings</a>
+        <a href="/api/wedingpackage/create"><i class="fas fa-gift"></i> Create Wedding Package</a>
+        <a href="/templates/editdeletepackage.html"><i class="fas fa-edit"></i> Edit/Delete Packages</a>
+        <a href="#"><i class="fas fa-chart-line"></i> Reports</a>
+    </div>
+
+    <div class="container">
+        <h2>🎉 Create Wedding Package</h2>
+        <form id="createPackageForm">
+            <div class="form-group">
+                <label for="packageName">Package Name</label>
+                <input type="text" id="packageName" name="packageName" required>
+                <span class="error" id="packageNameError">Package name is required</span>
+            </div>
+
+            <div class="form-group">
+                <label for="hallprice">Hall Price (e.g., 500)</label>
+                <input type="number" id="hallprice" name="hallprice" required min="0">
+                <span class="error" id="hallpriceError">Hall price must be positive</span>
+            </div>
+
+            <div class="form-group">
+                <label for="foodtype">Food Type</label>
+                <select id="foodtype" name="foodtype" required>
+                    <option value="">Select Food Type</option>
+                    <option value="veg">Vegetarian</option>
+                    <option value="nonveg">Non-Vegetarian</option>
+                </select>
+                <span class="error" id="foodtypeError">Food type is required</span>
+            </div>
+
+            <div class="form-group">
+                <label for="addon">Add-ons (Drinks/Snacks)</label>
+                <select id="addon" name="addon" required>
+                    <option value="false">No</option>
+                    <option value="true">Yes</option>
+                </select>
+                <span class="error" id="addonError">Add-on selection is required</span>
+            </div>
+
+            <div class="form-group">
+                <label for="persons">Number of Persons</label>
+                <input type="number" id="persons" name="persons" required min="1">
+                <span class="error" id="personsError">Number of persons must be positive</span>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Image URL</label>
+                <input type="url" id="image" name="image">
+                <span class="error" id="imageError">Valid URL is optional</span>
+            </div>
+
+            <button type="submit">✅ Create Package</button>
+            <span class="error" id="formError"></span>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('createPackageForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const formData = {
+            packageName: form.packageName.value,
+            hallprice: form.hallprice.value,
+            foodtype: form.foodtype.value,
+            addon: form.addon.value === 'true',
+            persons: parseInt(form.persons.value),
+            image: form.image.value || null
+        };
+
+        let isValid = true;
+        document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+
+        if (!formData.packageName) {
+            document.getElementById('packageNameError').style.display = 'block';
+            isValid = false;
+        }
+        if (!formData.hallprice || isNaN(formData.hallprice) || parseInt(formData.hallprice) <= 0) {
+            document.getElementById('hallpriceError').style.display = 'block';
+            isValid = false;
+        }
+        if (!formData.foodtype) {
+            document.getElementById('foodtypeError').style.display = 'block';
+            isValid = false;
+        }
+        if (formData.persons <= 0) {
+            document.getElementById('personsError').style.display = 'block';
+            isValid = false;
+        }
+
+        if (!isValid) return;
+
+        try {
+            const response = await fetch('http://localhost:8080/api/wedingpackage', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                alert('🎊 Package created successfully!');
+                form.reset();
+            } else {
+                const error = await response.json();
+                document.getElementById('formError').textContent = 'Error: ' + error.message;
+                document.getElementById('formError').style.display = 'block';
+            }
+        } catch (error) {
+            document.getElementById('formError').textContent = 'Error: ' + error.message;
+            document.getElementById('formError').style.display = 'block';
+        }
+    });
+</script>
+</body>
+
+</html>

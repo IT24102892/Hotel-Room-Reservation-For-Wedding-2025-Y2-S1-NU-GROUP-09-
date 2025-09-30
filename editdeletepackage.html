@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit and Delete Packages - Luxury Haven Hotel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f0f2f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #28a745;
+            color: white;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        img {
+            max-width: 120px;
+            height: auto;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+        .no-image {
+            width: 120px;
+            height: 80px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 12px;
+        }
+        .action-btn {
+            padding: 8px 12px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .edit-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .edit-btn:hover {
+            background-color: #0056b3;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        .edit-form {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #ffebee;
+            border-radius: 4px;
+        }
+        @media (max-width: 600px) {
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            th, td {
+                min-width: 120px;
+                font-size: 12px;
+                padding: 8px;
+            }
+            img {
+                max-width: 80px;
+            }
+            .no-image {
+                width: 80px;
+                height: 60px;
+            }
+            .action-btn {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+        }
+        .footer {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Edit and Delete Packages</h2>
+    <div class="error" id="errorMessage"></div>
+    <table id="packagesTable">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Package Name</th>
+            <th>Hall Price</th>
+            <th>Food Type</th>
+            <th>Add-ons</th>
+            <th>Persons</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div class="edit-form" id="editForm">
+        <h3>Edit Package</h3>
+        <input type="hidden" id="editId">
+        <div class="form-group">
+            <label for="editPackageName">Package Name</label>
+            <input type="text" id="editPackageName" required>
+        </div>
+        <div class="form-group">
+            <label for="editHallprice">Hall Price (e.g., 500)</label>
+            <input type="number" id="editHallprice" required min="0">
+        </div>
+        <div class="form-group">
+            <label for="editFoodtype">Food Type</label>
+            <select id="editFoodtype" required>
+                <option value="veg">Vegetarian</option>
+                <option value="nonveg">Non-Vegetarian</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="editAddon">Add-ons (Drinks/Snacks)</label>
+            <select id="editAddon" required>
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="editPersons">Number of Persons</label>
+            <input type="number" id="editPersons" required min="1">
+        </div>
+        <div class="form-group">
+            <label for="editImage">Image URL</label>
+            <input type="url" id="editImage">
+        </div>
+        <button onclick="saveEdit()">Save</button>
+        <button onclick="cancelEdit()">Cancel</button>
+    </div>
+</div>
+<div class="footer">
+    Last updated: Saturday, September 20, 2025, 09:37 PM IST
+</div>
+<script>
+    async function fetchPackages() {
+        try {
+            const response = await fetch('http://localhost:8080/api/wedingpackage');
+            const packages = await response.json();
+            if (!Array.isArray(packages)) {
+                throw new Error('Unexpected data format: Expected an array');
+            }
+            const tbody = document.querySelector('#packagesTable tbody');
+            tbody.innerHTML = '';
+            packages.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                        <td>${item.id || 'N/A'}</td>
+                        <td>${item.packageName || 'N/A'}</td>
+                        <td>${item.hallprice || 'N/A'}</td>
+                        <td>${item.foodtype || 'N/A'}</td>
+                        <td>${item.addon ? 'Yes' : 'No'}</td>
+                        <td>${item.persons || 'N/A'}</td>
+                        <td>${item.image ? `<img src="${item.image}" alt="Package Image">` : '<div class="no-image">No Image</div>'}</td>
+                        <td>
+                            <button class="action-btn edit-btn" onclick="showEditForm('${item.id}', '${item.packageName}', '${item.hallprice.replace('$', '')}', '${item.foodtype}', ${item.addon}, ${item.persons}, '${item.image || ''}')">Edit</button>
+                            <button class="action-btn delete-btn" onclick="deletePackage('${item.id}')">Delete</button>
+                        </td>
+                    `;
+                tbody.appendChild(row);
+            });
+        } catch (error) {
+            showError('Failed to load packages: ' + error.message);
+        }
+    }
+    function showEditForm(id, packageName, hallprice, foodtype, addon, persons, image) {
+        document.getElementById('editId').value = id;
+        document.getElementById('editPackageName').value = packageName;
+        document.getElementById('editHallprice').value = hallprice;
+        document.getElementById('editFoodtype').value = foodtype;
+        document.getElementById('editAddon').value = addon;
+        document.getElementById('editPersons').value = persons;
+        document.getElementById('editImage').value = image;
+        document.getElementById('editForm').style.display = 'block';
+    }
+    async function saveEdit() {
+        const id = document.getElementById('editId').value;
+        const formData = {
+            packageName: document.getElementById('editPackageName').value,
+            hallprice: '$' + document.getElementById('editHallprice').value, // Ensure $ prefix
+            foodtype: document.getElementById('editFoodtype').value,
+            addon: document.getElementById('editAddon').value === 'true',
+            persons: parseInt(document.getElementById('editPersons').value),
+            image: document.getElementById('editImage').value || null
+        };
+        try {
+            const response = await fetch(`http://localhost:8080/api/wedingpackage/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            if (response.ok) {
+                alert('Package updated successfully!');
+                document.getElementById('editForm').style.display = 'none';
+                fetchPackages();
+            } else {
+                const error = await response.json();
+                showError('Error: ' + error.message);
+            }
+        } catch (error) {
+            showError('Failed to update package: ' + error.message);
+        }
+    }
+    async function deletePackage(id) {
+        if (confirm('Are you sure you want to delete this package?')) {
+            try {
+                const response = await fetch(`http://localhost:8080/api/wedingpackage/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    alert('Package deleted successfully!');
+                    fetchPackages();
+                } else {
+                    const error = await response.json();
+                    showError('Error: ' + error.message);
+                }
+            } catch (error) {
+                showError('Failed to delete package: ' + error.message);
+            }
+        }
+    }
+    function cancelEdit() {
+        document.getElementById('editForm').style.display = 'none';
+    }
+    function showError(message) {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+        setTimeout(() => errorDiv.style.display = 'none', 5000);
+    }
+    document.addEventListener('DOMContentLoaded', fetchPackages);
+</script>
+</body>
+</html>
