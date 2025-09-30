@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Create Package Item</title>
+
+    <!-- Bootstrap (kept) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Theme: Indian Wedding – Light Blue & Gold (CSS only; no DOM/JS changes) -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:wght@600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ================= Root Variables ================= */
+        :root{
+            --color-bg:#EAF4FF;
+            --color-bg-soft:#F6FAFF;
+            --color-primary:#6BB6FF;
+            --color-primary-600:#3A93F3;
+            --color-accent:#D4AF37;
+            --color-ink:#0F1B2A;
+            --color-ink-soft:#3B4D66;
+            --ring:#D4AF37;
+
+            --grad-gold-soft:linear-gradient(135deg, rgba(212,175,55,0.00) 0%, rgba(212,175,55,0.22) 100%);
+            --grad-btn-hover:linear-gradient(180deg, rgba(212,175,55,0.18), rgba(212,175,55,0.06));
+
+            --shadow-soft:0 6px 20px rgba(15,27,42,.08),0 1px 0 rgba(15,27,42,.03) inset;
+            --shadow-elev:0 14px 40px rgba(15,27,42,.12);
+            --shadow-glass:0 2px 0 rgba(255,255,255,.8) inset,0 20px 40px rgba(58,147,243,.12);
+
+            --radius-sm:10px;
+            --radius-md:12px;
+            --radius-lg:16px;
+            --radius-2xl:20px;
+            --ring-w:2px;
+
+            --ff-display:"Playfair Display","Merriweather",ui-serif,Georgia,serif;
+            --ff-body:"Inter","Poppins",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+
+            --fs-xs:clamp(.78rem,.75rem + .2vw,.85rem);
+            --fs-sm:clamp(.9rem,.85rem + .25vw,1rem);
+            --fs-base:clamp(1rem,.96rem + .35vw,1.125rem);
+            --fs-lg:clamp(1.125rem,1.05rem + .6vw,1.35rem);
+            --fs-xl:clamp(1.35rem,1.2rem + .9vw,1.75rem);
+            --fs-2xl:clamp(1.75rem,1.4rem + 1.6vw,2.5rem);
+            --fs-3xl:clamp(2.25rem,1.8rem + 2.2vw,3.25rem);
+
+            --space-1:clamp(6px,.4vw,8px);
+            --space-2:clamp(10px,.7vw,12px);
+            --space-3:clamp(14px,1vw,16px);
+            --space-4:clamp(18px,1.3vw,22px);
+            --space-6:clamp(22px,2vw,28px);
+            --space-8:clamp(28px,3vw,40px);
+
+            --svg-gold-mandala:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'><g opacity='0.18' stroke='%23D4AF37' stroke-width='1'><circle cx='50' cy='50' r='28'/><path d='M50 6 L58 26 L80 28 L62 40 L66 62 L50 50 L34 62 L38 40 L20 28 L42 26 Z'/></g></svg>");
+            --svg-gold-paisley:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'><g opacity='0.18'><path d='M65 18c-24 0-43 19-43 43s19 43 43 43c19 0 34-15 34-34 0-8-3-16-8-22 1 18-14 32-32 32-17 0-31-13-31-30 0-18 14-32 32-32 13 0 23 5 32 13-9-9-21-13-35-13z' stroke='%23D4AF37' stroke-width='1.5'/></g></svg>");
+        }
+
+        /* ================= Base ================= */
+        html,body{background:var(--color-bg);color:var(--color-ink);font-family:var(--ff-body);font-size:var(--fs-base);line-height:1.6}
+        h1,h2,h3,.display,.heading{font-family:var(--ff-display);font-weight:700;color:var(--color-ink);letter-spacing:.2px}
+        .heading{font-size:var(--fs-xl)}
+
+        /* ================= Utilities ================= */
+        .u-rounded-2xl{border-radius:var(--radius-2xl)}
+        .u-shadow-soft{box-shadow:var(--shadow-soft)}
+        .u-border-gold{border:1px solid rgba(212,175,55,.2)}
+        .u-glass{backdrop-filter:saturate(140%) blur(8px);background:color-mix(in oklab,var(--color-bg-soft) 80%,white);box-shadow:var(--shadow-glass)}
+        .u-fade-up{animation:floatUp 520ms cubic-bezier(.22,1,.36,1) both}
+        .motif-corners{position:relative;isolation:isolate}
+        .motif-corners::before,.motif-corners::after{content:"";position:absolute;width:160px;height:160px;pointer-events:none;z-index:-1;background-size:contain;background-repeat:no-repeat;opacity:.4}
+        .motif-corners::before{top:-20px;left:-20px;background-image:var(--svg-gold-paisley);transform:rotate(-8deg)}
+        .motif-corners::after{bottom:-24px;right:-24px;background-image:var(--svg-gold-mandala);transform:rotate(8deg)}
+
+        /* ================= Card / Section ================= */
+        .card-glass{background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.9));border:1px solid rgba(212,175,55,.2);border-radius:var(--radius-2xl);box-shadow:var(--shadow-soft);overflow:clip}
+        .card-glass .card-header-like{padding:var(--space-4) var(--space-6);background:var(--grad-gold-soft);font-family:var(--ff-display);font-size:var(--fs-lg)}
+
+        /* ================= Inputs ================= */
+        .input-elegant{width:100%;background:#fff;border:1px solid rgba(15,27,42,.12);border-radius:12px;padding:12px 14px;box-shadow:inset 0 2px 6px rgba(15,27,42,.04);color:var(--color-ink);transition:border-color 180ms ease,box-shadow 180ms ease}
+        .input-elegant::placeholder{color:color-mix(in oklab,var(--color-ink-soft) 60%,white)}
+        .input-elegant:focus{border-color:rgba(212,175,55,.6);box-shadow:0 0 0 var(--ring-w) var(--ring), inset 0 2px 6px rgba(15,27,42,.04);outline:none}
+
+        /* ================= Buttons ================= */
+        .btn-wedding{--_bg:var(--color-primary);--_fg:#fff;--_bd:rgba(212,175,55,.25);display:inline-flex;align-items:center;gap:10px;padding:10px 18px;border-radius:var(--radius-lg);background:var(--_bg);color:var(--_fg);border:1px solid var(--_bd);box-shadow:0 2px 0 rgba(255,255,255,.6) inset,0 10px 24px rgba(58,147,243,.24);font-weight:600;transition:transform 180ms ease,box-shadow 180ms ease,background 180ms ease}
+        .btn-wedding:hover{background-image:var(--grad-btn-hover);background-color:var(--color-primary-600);transform:translateY(-1px);box-shadow:0 2px 0 rgba(255,255,255,.7) inset,0 12px 30px rgba(58,147,243,.3)}
+        .btn-wedding:active{transform:translateY(0);box-shadow:0 2px 0 rgba(255,255,255,.6) inset,0 8px 18px rgba(58,147,243,.2)}
+        .btn-wedding:focus-visible{box-shadow:0 0 0 calc(var(--ring-w) + 1px) var(--ring),0 12px 30px rgba(58,147,243,.28)}
+        .btn-wedding.is-ghost{background:transparent;color:var(--color-primary-600);border-color:rgba(58,147,243,.35)}
+        .btn-wedding.is-ghost:hover{background:rgba(58,147,243,.08)}
+
+        /* Harmonize Bootstrap defaults a bit */
+        .btn-success{background:var(--color-primary)!important;border-color:rgba(212,175,55,.25)!important}
+        .btn-secondary{background:#fff!important;color:var(--color-primary-600)!important;border-color:rgba(58,147,243,.35)!important}
+
+        /* ================= Focus / A11y ================= */
+        :focus-visible{outline:none;box-shadow:0 0 0 var(--ring-w) var(--ring)!important;border-radius:12px}
+        [role="button"],button,.btn-wedding{min-height:40px}
+
+        /* ================= Animations & Prefs ================= */
+        @keyframes floatUp{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+        @media (prefers-reduced-motion:reduce){
+            *,*::before,*::after{animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important;scroll-behavior:auto!important}
+        }
+    </style>
+</head>
+<body class="bg-light">
+<div class="container py-4 motif-corners u-fade-up">
+    <h1 class="h4 mb-3 heading">Add New Wedding Package Item</h1>
+
+    <!-- Form: structure unchanged; classes added only -->
+    <form th:action="@{/package/save}" th:object="${packageItem}" method="post" class="card p-3 shadow-sm card-glass u-rounded-2xl">
+
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" th:field="*{name}" class="form-control input-elegant" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea th:field="*{description}" class="form-control input-elegant" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Price</label>
+            <input type="number" th:field="*{price}" step="0.01" class="form-control input-elegant" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Image URL</label>
+            <input type="url" th:field="*{imageUrl}" class="form-control input-elegant" />
+        </div>
+
+        <div class="form-check mb-3">
+            <input type="checkbox" th:field="*{active}" class="form-check-input" />
+            <label class="form-check-label">Active</label>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-wedding">Save</button>
+        <a th:href="@{/choosepackage}" class="btn btn-secondary btn-wedding is-ghost">Cancel</a>
+    </form>
+</div>
+</body>
+</html>
