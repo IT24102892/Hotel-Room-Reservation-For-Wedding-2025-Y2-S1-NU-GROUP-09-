@@ -1,0 +1,290 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Package Payment</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 25px;
+            font-size: 28px;
+            animation: slideDown 0.8s ease;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 900px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .receipt-form, .image-section {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+            animation: fadeUp 1s ease both;
+        }
+
+        .receipt-form h2 {
+            color: #1e3c72;
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus {
+            border-color: #2a5298;
+            box-shadow: 0 0 6px rgba(30, 60, 114, 0.4);
+            outline: none;
+        }
+
+        .book-btn {
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .book-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        #paymentStatus {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+            transition: opacity 0.4s ease;
+        }
+        .error { color: red; }
+
+        .image-section {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .image-section img {
+            max-width: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+            animation: zoomIn 1s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .image-section::after {
+            content: "";
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: rgba(42,82,152,0.15);
+            transform: rotate(25deg);
+            animation: floatOverlay 6s infinite linear;
+        }
+
+        .package-details {
+            margin-bottom: 20px;
+            background: #f1f5ff;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .package-details p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #444;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        @keyframes floatOverlay {
+            0% { transform: rotate(25deg) translateY(0); }
+            50% { transform: rotate(25deg) translateY(-20px); }
+            100% { transform: rotate(25deg) translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .receipt-form { margin-right: 0; }
+        }
+    </style>
+</head>
+<body>
+<h1>HOTEL CHECKOUT FORM</h1>
+<div class="container">
+    <div class="receipt-form">
+        <h2>Receipt Form</h2>
+        <div class="package-details">
+            <p><strong>Package Name:</strong> <span id="packageName"></span></p>
+            <p><strong>Hall Price:</strong> <span id="hallPrice"></span></p>
+            <p><strong>Food Type:</strong> <span id="foodType"></span></p>
+            <p><strong>Total:</strong> <span id="total"></span></p>
+        </div>
+        <div class="form-group">
+            <label for="cardHolder">NAME ON CREDIT CARD</label>
+            <input type="text" id="cardHolder" placeholder="James Thompson" required>
+        </div>
+        <div class="form-group">
+            <label for="cardNumber">CREDIT CARD NUMBER</label>
+            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+        </div>
+        <div class="form-group">
+            <label for="expiryDate">EXPIRES ON</label>
+            <input type="text" id="expiryDate" placeholder="03/2025 or March/2025" required>
+        </div>
+        <div class="form-group">
+            <label for="cvv">CVC ON CREDIT</label>
+            <input type="text" id="cvv" placeholder="123" required>
+        </div>
+        <button class="book-btn" onclick="processPayment()">BOOK SECURELY</button>
+        <p><small>Your credit card information is encrypted.</small></p>
+        <div id="paymentStatus"></div>
+    </div>
+    <div class="image-section">
+        <img src="" id="packageImage" alt="Package Image">
+    </div>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const packageId = urlParams.get('id');
+
+    if (packageId) {
+        fetch(`/api/wedingpackage/${packageId}`)
+            .then(response => response.json())
+            .then(package => {
+                document.getElementById('packageName').textContent = package.packageName;
+                document.getElementById('hallPrice').textContent = package.hallprice;
+                document.getElementById('foodType').textContent = package.foodtype;
+                document.getElementById('total').textContent = package.hallprice;
+                document.getElementById('packageImage').src = package.image;
+            })
+            .catch(error => {
+                console.error('Error fetching package:', error);
+                document.getElementById('paymentStatus').textContent = 'Error loading package details';
+                document.getElementById('paymentStatus').classList.add('error');
+            });
+    } else {
+        document.getElementById('paymentStatus').textContent = 'No package selected';
+        document.getElementById('paymentStatus').classList.add('error');
+    }
+
+    function processPayment() {
+        const cardNumber = document.getElementById('cardNumber').value;
+        const cardHolder = document.getElementById('cardHolder').value;
+        const expiryDate = document.getElementById('expiryDate').value;
+        const cvv = document.getElementById('cvv').value;
+
+        if (!cardNumber || !cardHolder || !expiryDate || !cvv) {
+            showStatus('Please fill all payment fields', true);
+            return;
+        }
+
+        if (!cardNumber.match(/^\d{16}$/)) {
+            showStatus('Invalid card number (must be 16 digits)', true);
+            return;
+        }
+
+        // Accept either MM/YYYY or Month/YYYY
+        const monthRegex = /^(0[1-9]|1[0-2])\/\d{4}$/;
+        const monthNameRegex = /^(January|February|March|April|May|June|July|August|September|October|November|December)\/\d{4}$/i;
+        if (!monthRegex.test(expiryDate) && !monthNameRegex.test(expiryDate)) {
+            showStatus('Invalid expiry date (use MM/YYYY or Month/YYYY, e.g., 03/2025 or March/2025)', true);
+            return;
+        }
+
+        if (!cvv.match(/^\d{3}$/)) {
+            showStatus('Invalid CVV (must be 3 digits)', true);
+            return;
+        }
+
+        const paymentData = {
+            packageId,
+            packageName: document.getElementById('packageName').textContent,
+            hallPrice: document.getElementById('hallPrice').textContent,
+            foodType: document.getElementById('foodType').textContent,
+            cardNumber,
+            cardHolder,
+            expiryDate,
+            cvv
+        };
+
+        fetch('/api/wedingpackage/payweding', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(paymentData),
+        })
+            .then(response => response.json())
+            .then(() => {
+                showStatus('Payment processed successfully!', false);
+                document.getElementById('cardHolder').value = '';
+                document.getElementById('cardNumber').value = '';
+                document.getElementById('expiryDate').value = '';
+                document.getElementById('cvv').value = '';
+            })
+            .catch(error => {
+                console.error('Error processing payment:', error);
+                showStatus('Error processing payment', true);
+            });
+    }
+
+    function showStatus(message, isError) {
+        const status = document.getElementById('paymentStatus');
+        status.textContent = message;
+        status.className = isError ? 'error' : '';
+        status.style.opacity = '1';
+        setTimeout(() => { status.style.opacity = '0.8'; }, 2000);
+    }
+</script>
+</body>
+</html>
