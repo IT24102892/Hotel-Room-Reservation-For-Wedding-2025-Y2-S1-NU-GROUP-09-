@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Luxury Haven</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 2px, transparent 2px),
+                    radial-gradient(circle at 75% 75%, rgba(255,255,255,0.08) 3px, transparent 3px),
+                    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 120px 120px, 80px 80px, 60px 60px;
+            animation: backgroundFloat 25s infinite linear;
+            z-index: -1;
+        }
+
+        @keyframes backgroundFloat {
+            0% { transform: translateX(0) translateY(0) rotate(0deg); }
+            33% { transform: translateX(-20px) translateY(-10px) rotate(120deg); }
+            66% { transform: translateX(10px) translateY(-20px) rotate(240deg); }
+            100% { transform: translateX(0) translateY(0) rotate(360deg); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Enhanced header with glassmorphism */
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 48px;
+            font-weight: 700;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            animation: titleSlideDown 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            border-radius: 2px;
+            animation: expandUnderline 1.5s ease 0.5s both;
+        }
+
+        @keyframes expandUnderline {
+            from { width: 0; }
+            to { width: 150px; }
+        }
+
+        .text-center {
+            color: rgba(255,255,255,0.9);
+            font-size: 18px;
+            font-weight: 300;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease 0.3s both;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Enhanced search bar */
+        .search-bar {
+            max-width: 400px;
+            margin: 30px auto;
+            position: relative;
+            animation: fadeInUp 1s ease 0.6s both;
+        }
+
+        .search-bar .form-control {
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            color: white;
+            font-size: 16px;
+            padding: 15px 25px 15px 50px;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .search-bar .form-control::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .search-bar .form-control:focus {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.5);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2), 0 0 0 0.2rem rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
+
+        .search-bar::before {
+            content: '\f002';
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.7);
+            z-index: 10;
+            font-size: 18px;
+        }
+
+        /* Enhanced filter buttons */
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease 0.9s both;
+            flex-wrap: wrap;
+        }
+
+        .btn-outline-primary {
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+        }
+
+        .btn-outline-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.4s ease;
+        }
+
+        .btn-outline-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-outline-primary:hover {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.5);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            color: white;
+        }
+
+        .btn-outline-primary:focus,
+        .btn-outline-primary:active {
+            background: rgba(255,255,255,0.3) !important;
+            border-color: rgba(255,255,255,0.6) !important;
+            color: white !important;
+            box-shadow: 0 0 0 0.2rem rgba(255,255,255,0.25) !important;
+        }
+
+        /* Enhanced cards */
+        #roomsContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.95);
+            border: none;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: cardFadeIn 0.8s ease both;
+            position: relative;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(102,126,234,0.1), rgba(247,148,164,0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .card-img-top {
+            height: 250px;
+            object-fit: cover;
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card:hover .card-img-top {
+            transform: scale(1.1);
+            filter: brightness(1.1);
+        }
+
+        .card-body {
+            padding: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .card:hover .card-title {
+            color: #667eea;
+        }
+
+        .card-text {
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 500;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .card-text::before {
+            content: '★';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.4s ease;
+        }
+
+        .btn-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(102,126,234,0.4);
+        }
+
+        /* Loading animation */
+        .loading {
+            position: relative;
+            min-height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255,255,255,0.3);
+            border-top: 6px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading::after {
+            content: 'Loading luxury accommodations...';
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Keyframe animations */
+        @keyframes titleSlideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-100px) scale(0.8);
+            }
+            60% {
+                opacity: 1;
+                transform: translateY(10px) scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 36px;
+            }
+
+            .btn-group {
+                gap: 10px;
+            }
+
+            .btn-outline-primary {
+                padding: 10px 20px;
+                font-size: 12px;
+            }
+
+            #roomsContainer {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        /* Status indicators */
+        .available-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4ecdc4;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .unavailable-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            margin-right: 8px;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(78, 205, 196, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(78, 205, 196, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(78, 205, 196, 0);
+            }
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            color: white;
+            padding: 60px 20px;
+            font-size: 18px;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h1><i class="fas fa-crown" style="color: #ffd700; margin-right: 15px;"></i>Luxury Haven</h1>
+    <p class="text-center">Discover our luxurious accommodations and elegant event halls, designed to provide the perfect experience for you.</p>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search rooms and halls..." onkeyup="searchRooms()">
+    </div>
+
+    <div class="btn-group mb-4" role="group">
+        <button id="allFilter" class="btn btn-outline-primary"><i class="fas fa-th-large"></i> All</button>
+        <button id="roomsFilter" class="btn btn-outline-primary"><i class="fas fa-bed"></i> Rooms</button>
+        <button id="hallsFilter" class="btn btn-outline-primary"><i class="fas fa-building"></i> Halls</button>
+        <button id="availableFilter" class="btn btn-outline-primary"><i class="fas fa-check-circle"></i> Available</button>
+    </div>
+
+    <div id="roomsContainer" class="loading">
+        <div class="spinner"></div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    function createCard(room, index = 0) {
+        console.log('Room data:', room);
+        const card = document.createElement('div');
+        card.className = 'col-12';
+        card.style.animationDelay = `${index * 0.1}s`;
+
+        const link = room.available ? `/api/rooms-halls/payment?roomId=${room.id || '0'}` : '#';
+        console.log('Generated link:', link);
+
+        const availabilityIcon = room.available ?
+            '<span class="available-indicator"></span>' :
+            '<span class="unavailable-indicator"></span>';
+
+        const airConditionIcon = room.aircondition ?
+            '<i class="fas fa-snowflake" style="color: #4ecdc4;"></i>' :
+            '<i class="fas fa-times" style="color: #ff6b6b;"></i>';
+
+        card.innerHTML = `
+            <div class="card">
+                <img src="${room.image}" class="card-img-top" alt="Room/Hall Image">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-${room.types.toLowerCase() === 'room' ? 'bed' : 'building'}"></i>
+                        ${room.types.charAt(0).toUpperCase() + room.types.slice(1)}
+                    </h5>
+                    <p class="card-text">
+                        <i class="fas fa-users"></i>
+                        <strong>Capacity:</strong> ${room.number} persons
+                    </p>
+                    <p class="card-text">
+                        ${airConditionIcon}
+                        <strong>Air Conditioned:</strong> ${room.aircondition ? 'Yes' : 'No'}
+                    </p>
+                    <p class="card-text">
+                        <i class="fas fa-dollar-sign"></i>
+                        <strong>Price:</strong> $${room.price}
+                    </p>
+                    <p class="card-text">
+                        ${availabilityIcon}
+                        <strong>Available:</strong> ${room.available ? 'Yes' : 'No'}
+                    </p>
+                    ${room.available ? `<a href="${link}" class="btn btn-primary"><i class="fas fa-calendar-check"></i> Book Now</a>` :
+            '<button class="btn btn-secondary" disabled><i class="fas fa-ban"></i> Unavailable</button>'}
+                </div>
+            </div>
+        `;
+        return card;
+    }
+
+    let allRooms = [];
+
+    function fetchRooms(filter = '') {
+        let url = '/api/rooms-halls/user';
+        if (filter === 'rooms') {
+            url += '?type=rooms';
+        } else if (filter === 'halls') {
+            url += '?type=halls';
+        } else if (filter === 'available') {
+            url += '?available=true';
+        }
+
+        const container = document.getElementById('roomsContainer');
+        container.className = 'loading';
+        container.innerHTML = '<div class="spinner"></div>';
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                allRooms = data;
+                container.className = '';
+                container.innerHTML = '';
+
+                if (data.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <p>No rooms or halls available matching your criteria.</p>
+                        </div>
+                    `;
+                } else {
+                    data.forEach((room, index) => {
+                        setTimeout(() => {
+                            container.appendChild(createCard(room, index));
+                        }, index * 100);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                container.className = '';
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Error loading rooms/halls. Please try again later.</p>
+                    </div>
+                `;
+            });
+    }
+
+    function searchRooms() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const container = document.getElementById('roomsContainer');
+        container.className = '';
+        container.innerHTML = '';
+
+        const filteredRooms = allRooms.filter(room =>
+            room.types.toLowerCase().includes(searchTerm) ||
+            room.number.toString().includes(searchTerm) ||
+            (room.available ? 'yes' : 'no').includes(searchTerm.toLowerCase()) ||
+            room.price.toString().includes(searchTerm)
+        );
+
+        if (filteredRooms.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <p>No matching rooms or halls found for "${searchTerm}".</p>
+                </div>
+            `;
+        } else {
+            filteredRooms.forEach((room, index) => {
+                setTimeout(() => {
+                    container.appendChild(createCard(room, index));
+                }, index * 100);
+            });
+        }
+    }
+
+    // Enhanced button interactions
+    function setActiveButton(activeButton) {
+        document.querySelectorAll('.btn-outline-primary').forEach(btn => {
+            btn.classList.remove('active');
+            btn.style.background = 'rgba(255,255,255,0.15)';
+        });
+        activeButton.classList.add('active');
+        activeButton.style.background = 'rgba(255,255,255,0.3)';
+    }
+
+    document.getElementById('allFilter').addEventListener('click', function() {
+        setActiveButton(this);
+        fetchRooms('');
+    });
+
+    document.getElementById('roomsFilter').addEventListener('click', function() {
+        setActiveButton(this);
+        fetchRooms('rooms');
+    });
+
+    document.getElementById('hallsFilter').addEventListener('click', function() {
+        setActiveButton(this);
+        fetchRooms('halls');
+    });
+
+    document.getElementById('availableFilter').addEventListener('click', function() {
+        setActiveButton(this);
+        fetchRooms('available');
+    });
+
+    // Initialize with all rooms and set default active button
+    setActiveButton(document.getElementById('allFilter'));
+    fetchRooms('');
+
+    // Add search input animation
+    document.getElementById('searchInput').addEventListener('focus', function() {
+        this.parentElement.style.transform = 'scale(1.02)';
+    });
+
+    document.getElementById('searchInput').addEventListener('blur', function() {
+        this.parentElement.style.transform = 'scale(1)';
+    });
+</script>
+</body>
+</html>

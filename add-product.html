@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Room or Hall - Luxury Haven Hotel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #c19a6b;
+            --secondary: #1a1a2e;
+            --light: #f9f9f9;
+            --danger: #dc3545;
+            --success: #28a745;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+            padding: 0;
+        }
+        /* Menu */
+        .menu {
+            background-color: var(--secondary);
+            padding: 12px 20px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s, background 0.3s;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+        .menu a:hover {
+            background-color: var(--primary);
+            color: #fff;
+        }
+        /* Form container */
+        .page-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 60px);
+            padding: 20px;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+            animation: fadeIn 0.5s ease;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--secondary);
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #444;
+        }
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 8px 12px;
+            background: #fafafa;
+        }
+        .input-wrapper i {
+            color: var(--primary);
+            margin-right: 10px;
+        }
+        input, select {
+            border: none;
+            outline: none;
+            background: transparent;
+            flex: 1;
+            font-size: 15px;
+            padding: 8px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #a57c51;
+        }
+        .error {
+            font-size: 13px;
+            color: var(--danger);
+            display: none;
+            margin-top: 4px;
+        }
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+        }
+        .notification.success { background: var(--success); }
+        .notification.error { background: var(--danger); }
+        .notification.show { display: flex; animation: slideIn 0.4s ease; }
+        @keyframes slideIn {
+            from { transform: translateX(120%); }
+            to { transform: translateX(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation Menu -->
+<div class="menu">
+    <a href="/api/manage"><i class="fas fa-bed"></i> Manage Users</a>
+    <a href="/api/rooms-halls/view"><i class="fas fa-building"></i> Edit Halls</a>
+    <a href="/api/rooms-halls/add"><i class="fas fa-users"></i> Add Halls</a>
+    <a href="/api/calendarview/add"><i class="fas fa-calendar-check"></i> Add Calendar View</a>
+    <a href="/api/rooms-halls/view"><i class="fas fa-calendar-check"></i> Bookings</a>
+    <a href="#"><i class="fas fa-chart-line"></i> Reports</a>
+</div>
+
+<!-- Page Content -->
+<div class="page-content">
+    <div class="form-container">
+        <h2><i class="fas fa-plus-circle"></i> Add Room or Hall</h2>
+        <form id="addProductForm">
+
+            <!-- Name field -->
+            <div class="form-group">
+                <label for="name">Name</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-tag"></i>
+                    <input type="text" id="name" name="name" placeholder="Enter Room/Hall Name" required>
+                </div>
+                <span class="error" id="nameError">Name is required</span>
+            </div>
+
+            <div class="form-group">
+                <label for="types">Type</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-building"></i>
+                    <select id="types" name="types" required>
+                        <option value="">Select Type</option>
+                        <option value="rooms">Room</option>
+                        <option value="halls">Hall</option>
+                    </select>
+                </div>
+                <span class="error" id="typesError">Type is required</span>
+            </div>
+            <div class="form-group">
+                <label for="number">Capacity</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-users"></i>
+                    <input type="number" id="number" name="number" placeholder="e.g. 2 for Room or 200 for Hall" required>
+                </div>
+                <span class="error" id="numberError">Valid capacity required (Rooms: 1-2, Halls: 100-1000)</span>
+            </div>
+            <div class="form-group">
+                <label for="available">Available</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-check-circle"></i>
+                    <select id="available" name="available" required>
+                        <option value="">Select Availability</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+                <span class="error" id="availableError">Availability is required</span>
+            </div>
+            <div class="form-group">
+                <label for="aircondition">Air Conditioned</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-snowflake"></i>
+                    <select id="aircondition" name="aircondition" required>
+                        <option value="">Select AC Option</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
+                <span class="error" id="airconditionError">AC option is required</span>
+            </div>
+            <div class="form-group">
+                <label for="image">Image URL</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-image"></i>
+                    <input type="url" id="image" name="image" placeholder="https://example.com/photo.jpg">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="price">Price</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-dollar-sign"></i>
+                    <input type="number" id="price" name="price" placeholder="Enter price" required>
+                </div>
+                <span class="error" id="priceError">Price must be positive</span>
+            </div>
+            <button type="submit"><i class="fas fa-save"></i> Add Room/Hall</button>
+        </form>
+    </div>
+</div>
+
+<div id="notification" class="notification"><i class="fas fa-info-circle"></i><span id="notifText"></span></div>
+
+<script>
+    const form = document.getElementById('addProductForm');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = {
+            name: form.name.value,
+            types: form.types.value,
+            number: parseInt(form.number.value),
+            available: form.available.value === 'true',
+            aircondition: form.aircondition.value === 'true',
+            image: form.image.value || null,
+            price: parseInt(form.price.value)
+        };
+
+        // reset errors
+        document.querySelectorAll('.error').forEach(err => err.style.display = 'none');
+        let valid = true;
+        if (!formData.name) { document.getElementById('nameError').style.display = 'block'; valid = false; }
+        if (!formData.types) { document.getElementById('typesError').style.display = 'block'; valid = false; }
+        if (!formData.number ||
+            (formData.types === 'rooms' && ![1,2].includes(formData.number)) ||
+            (formData.types === 'halls' && (formData.number < 100 || formData.number > 1000))) {
+            document.getElementById('numberError').style.display = 'block'; valid = false;
+        }
+        if (!formData.price || formData.price <= 0) { document.getElementById('priceError').style.display = 'block'; valid = false; }
+        if (!valid) return;
+
+        try {
+            const response = await fetch('http://localhost:8080/api/rooms-halls', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            if (response.ok) {
+                showNotification('Room/Hall added successfully!', true);
+                form.reset();
+            } else {
+                const error = await response.json();
+                showNotification('Error: ' + error.message, false);
+            }
+        } catch (err) {
+            showNotification('Error: ' + err.message, false);
+        }
+    });
+
+    function showNotification(msg, success = true) {
+        const notif = document.getElementById('notification');
+        const text = document.getElementById('notifText');
+        text.textContent = msg;
+        notif.className = 'notification ' + (success ? 'success' : 'error') + ' show';
+        setTimeout(() => notif.classList.remove('show'), 3000);
+    }
+</script>
+</body>
+</html>
