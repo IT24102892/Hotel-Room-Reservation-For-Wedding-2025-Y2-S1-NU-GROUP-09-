@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Add Calendar Event - Luxury Haven Hotel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <!-- Indian Wedding Theme – Light Blue & Soft Gold (CSS only; no DOM/JS logic changes) -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:wght@600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        /* =================== Design System =================== */
+        :root{
+            /* Theme palette */
+            --color-bg:#EAF4FF;            /* light blue base */
+            --color-bg-soft:#F6FAFF;       /* softer panel */
+            --color-primary:#6BB6FF;       /* light blue */
+            --color-primary-600:#3A93F3;
+            --color-accent:#D4AF37;        /* soft gold */
+            --color-ink:#0F1B2A;           /* dark ink */
+            --color-ink-soft:#3B4D66;
+            --ring:#D4AF37;
+
+            /* Existing app vars (left intact for safety) */
+            --primary:#c19a6b; --secondary:#1a1a2e; --light:#f9f9f9; --danger:#dc3545; --success:#28a745;
+
+            /* Effects */
+            --grad-gold-soft:linear-gradient(135deg, rgba(212,175,55,0.00) 0%, rgba(212,175,55,0.22) 100%);
+            --shadow-soft:0 6px 20px rgba(15,27,42,.08), 0 1px 0 rgba(15,27,42,.03) inset;
+            --shadow-elev:0 14px 40px rgba(15,27,42,.12);
+            --shadow-glass:0 2px 0 rgba(255,255,255,.8) inset, 0 20px 40px rgba(58,147,243,.12);
+
+            /* Radii & ring */
+            --radius-md:12px; --radius-lg:16px; --radius-2xl:20px; --ring-w:2px;
+
+            /* Typography */
+            --ff-display:"Playfair Display","Merriweather",ui-serif,Georgia,serif;
+            --ff-body:"Inter","Poppins",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+
+            /* Fluid sizes */
+            --fs-base:clamp(1rem,.96rem + .35vw,1.125rem);
+            --fs-lg:clamp(1.125rem,1.05rem + .6vw,1.35rem);
+            --fs-xl:clamp(1.35rem,1.2rem + .9vw,1.75rem);
+
+            /* Motif SVGs */
+            --svg-gold-mandala:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'><g opacity='0.18' stroke='%23D4AF37' stroke-width='1'><circle cx='50' cy='50' r='28'/><path d='M50 6 L58 26 L80 28 L62 40 L66 62 L50 50 L34 62 L38 40 L20 28 L42 26 Z'/></g></svg>");
+            --svg-gold-paisley:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'><g opacity='0.18'><path d='M65 18c-24 0-43 19-43 43s19 43 43 43c19 0 34-15 34-34 0-8-3-16-8-22 1 18-14 32-32 32-17 0-31-13-31-30 0-18 14-32 32-32 13 0 23 5 32 13-9-9-21-13-35-13z' stroke='%23D4AF37' stroke-width='1.5'/></g></svg>");
+        }
+
+        /* =================== Base =================== */
+        html,body{margin:0;background:var(--color-bg);color:var(--color-ink);font-family:var(--ff-body);font-size:var(--fs-base);line-height:1.6;display:flex;min-height:100vh}
+        h2{font-family:var(--ff-display);font-weight:700;color:var(--color-ink);font-size:var(--fs-xl);letter-spacing:.2px}
+
+        /* =================== Sidebar Menu =================== */
+        .menu{
+            width:240px;min-height:100vh;box-sizing:border-box;
+            background:rgba(255,255,255,.6);backdrop-filter:blur(10px);
+            color:var(--color-ink);padding:20px 15px;border-right:1px solid rgba(212,175,55,.18)
+        }
+        .menu a{
+            display:block;padding:12px 14px;margin:8px 0;text-decoration:none;
+            color:var(--color-ink-soft);border-radius:var(--radius-md);
+            transition:color 200ms ease, background 200ms ease, box-shadow 200ms ease;
+            position:relative;font-weight:600
+        }
+        .menu a:hover{color:var(--color-ink);background:rgba(58,147,243,.08)}
+        .menu a:focus-visible{outline:none;box-shadow:0 0 0 var(--ring-w) var(--ring)}
+        .menu i{margin-right:8px}
+        .menu a::after{
+            content:"";position:absolute;left:12px;right:12px;bottom:6px;height:2px;
+            background:var(--color-accent);transform:scaleX(0);transform-origin:left;transition:transform 200ms ease
+        }
+        .menu a:hover::after{transform:scaleX(1)}
+
+        /* =================== Main Container =================== */
+        .container{
+            flex:1;max-width:680px;margin:auto;background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.92));
+            border-radius:var(--radius-2xl);box-shadow:var(--shadow-soft);padding:30px;border:1px solid rgba(212,175,55,.2);
+            position:relative;isolation:isolate;overflow:clip;animation:floatUp 520ms cubic-bezier(.22,1,.36,1) both
+        }
+        /* Motif corners */
+        .container::before,.container::after{
+            content:"";position:absolute;width:160px;height:160px;pointer-events:none;z-index:-1;background-size:contain;background-repeat:no-repeat;opacity:.4
+        }
+        .container::before{top:-18px;left:-18px;background-image:var(--svg-gold-paisley);transform:rotate(-8deg)}
+        .container::after{bottom:-22px;right:-22px;background-image:var(--svg-gold-mandala);transform:rotate(8deg)}
+
+        h2{margin-top:4px;margin-bottom:18px;background:var(--grad-gold-soft);padding:12px 14px;border-radius:var(--radius-lg)}
+
+        /* =================== Form =================== */
+        .form-group{margin-bottom:18px}
+        label{display:block;margin-bottom:6px;font-weight:600;color:var(--color-ink)}
+        input,select,textarea{
+            width:100%;padding:10px 12px;border:1px solid rgba(15,27,42,.12);border-radius:12px;font-size:14px;box-sizing:border-box;background:#fff;color:var(--color-ink);
+            box-shadow:inset 0 2px 6px rgba(15,27,42,.04);transition:border-color 180ms ease, box-shadow 180ms ease
+        }
+        input:focus,select:focus,textarea:focus{border-color:rgba(212,175,55,.6);outline:none;box-shadow:0 0 0 var(--ring-w) var(--ring), inset 0 2px 6px rgba(15,27,42,.04)}
+        input::placeholder{color:color-mix(in oklab, var(--color-ink-soft) 60%, white)}
+
+        button{
+            width:100%;padding:12px;background:var(--color-primary);
+            border:1px solid rgba(212,175,55,.25);border-radius:var(--radius-lg);
+            color:#fff;font-size:16px;font-weight:700;cursor:pointer;
+            transition:transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+            box-shadow:0 2px 0 rgba(255,255,255,.6) inset, 0 10px 24px rgba(58,147,243,.24)
+        }
+        button:hover{
+            background:var(--color-primary-600);
+            background-image:linear-gradient(180deg, rgba(212,175,55,.18), rgba(212,175,55,.06));
+            transform:translateY(-1px);box-shadow:0 2px 0 rgba(255,255,255,.7) inset, 0 12px 30px rgba(58,147,243,.3)
+        }
+        button:focus-visible{outline:none;box-shadow:0 0 0 calc(var(--ring-w) + 1px) var(--ring), 0 12px 30px rgba(58,147,243,.28)}
+
+        .error{color:var(--danger);font-size:13px;display:none;margin-top:4px}
+
+        /* =================== Notification (Toast) =================== */
+        .notification{
+            position:fixed;top:20px;right:20px;padding:15px 20px;border-radius:var(--radius-lg);
+            color:#fff;font-weight:600;box-shadow:var(--shadow-elev);display:none;align-items:center;gap:10px;z-index:1000;
+            transform:translateY(6px) scale(.98);opacity:0
+        }
+        .notification.success{background:linear-gradient(180deg,#2faf63,#28a745)}
+        .notification.error{background:linear-gradient(180deg,#e55361,#dc3545)}
+        .notification.show{display:flex;animation:floatUp 300ms cubic-bezier(.22,1,.36,1) forwards}
+
+        /* =================== Animations & Motion =================== */
+        @keyframes floatUp{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+        @media (prefers-reduced-motion:reduce){
+            *,*::before,*::after{animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important;scroll-behavior:auto!important}
+        }
+
+        /* =================== Responsive =================== */
+        @media (max-width: 920px){ .menu{width:200px} }
+        @media (max-width: 720px){
+            body{display:block}
+            .menu{width:100%;min-height:auto;border-right:none;border-bottom:1px solid rgba(212,175,55,.18)}
+            .container{margin:20px}
+        }
+    </style>
+</head>
+<body>
+<!-- Sidebar Menu (structure unchanged) -->
+<div class="menu">
+    <a href="/api/manage"><i class="fas fa-users" aria-hidden="true"></i> Manage Users</a>
+    <a href="/api/rooms-halls/view"><i class="fas fa-building" aria-hidden="true"></i> View Halls/Rooms</a>
+    <a href="/api/rooms-halls/add"><i class="fas fa-plus" aria-hidden="true"></i> Add Hall/Room</a>
+    <a href="/api/calendarview/add"><i class="fas fa-calendar-plus" aria-hidden="true"></i> Add Calendar Event</a>
+    <a href="/api/calendarview/view"><i class="fas fa-calendar" aria-hidden="true"></i> View Calendar</a>
+    <a href="/api/bookings"><i class="fas fa-book" aria-hidden="true"></i> Bookings</a>
+    <a href="#"><i class="fas fa-chart-line" aria-hidden="true"></i> Reports</a>
+</div>
+
+<!-- Main Form (no logic change) -->
+<div class="container">
+    <h2><i class="fas fa-calendar-plus" aria-hidden="true"></i> Add Calendar Event</h2>
+    <form id="addCalendarviewForm">
+        <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" />
+            <span class="error" id="dateError">Date is required</span>
+        </div>
+
+        <div class="form-group">
+            <label for="wedingtype">Wedding Type</label>
+            <select id="wedingtype" name="wedingtype">
+                <option value="">Select Wedding Type</option>
+                <option value="Hindu">Hindu</option>
+                <option value="Muslim">Muslim</option>
+                <option value="Christian">Christian</option>
+            </select>
+            <span class="error" id="wedingtypeError">Wedding type is required</span>
+        </div>
+
+        <div class="form-group">
+            <label for="discription">Description</label>
+            <textarea id="discription" name="discription" rows="4"></textarea>
+            <span class="error" id="discriptionError">Description is required</span>
+        </div>
+
+        <div class="form-group">
+            <label for="location">Location</label>
+            <select id="location" name="location">
+                <option value="">Select Location</option>
+                <option value="Jaffna">Jaffna</option>
+                <option value="Vaniya">Vaniya</option>
+                <option value="Mannar">Mannar</option>
+                <option value="Kilinochi">Kilinochi</option>
+                <option value="Mullaithevu">Mullaithevu</option>
+            </select>
+            <span class="error" id="locationError">Location is required</span>
+        </div>
+
+        <div class="form-group">
+            <label for="image">Image URL (optional)</label>
+            <input type="url" id="image" name="image" placeholder="https://example.com/image.jpg"/>
+        </div>
+
+        <div class="form-group">
+            <label for="time">Time</label>
+            <input type="text" id="time" name="time" placeholder="e.g., 10:00 AM - 2:00 PM"/>
+            <span class="error" id="timeError">Time is required</span>
+        </div>
+
+        <button type="submit"><i class="fas fa-save" aria-hidden="true"></i> Add Event</button>
+    </form>
+</div>
+
+<!-- Toast / Notification -->
+<div id="notification" class="notification" aria-live="polite">
+    <i class="fas fa-info-circle" aria-hidden="true"></i><span id="notifText"></span>
+</div>
+
+<script>
+    const form = document.getElementById('addCalendarviewForm');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = {
+            date: form.date.value,
+            wedingtype: form.wedingtype.value,
+            discription: form.discription.value,
+            location: form.location.value,
+            image: form.image.value || null,
+            time: form.time.value
+        };
+
+        document.querySelectorAll('.error').forEach(err => err.style.display = 'none');
+        let valid = true;
+        if (!formData.date) { document.getElementById('dateError').style.display = 'block'; valid = false; }
+        if (!formData.wedingtype) { document.getElementById('wedingtypeError').style.display = 'block'; valid = false; }
+        if (!formData.discription) { document.getElementById('discriptionError').style.display = 'block'; valid = false; }
+        if (!formData.location) { document.getElementById('locationError').style.display = 'block'; valid = false; }
+        if (!formData.time) { document.getElementById('timeError').style.display = 'block'; valid = false; }
+        if (!valid) return;
+
+        try {
+            const response = await fetch('http://localhost:8080/api/calendarview', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            if (response.ok) {
+                showNotification('Event added successfully!', true);
+                form.reset();
+            } else {
+                const error = await response.json();
+                showNotification('Error: ' + error.message, false);
+            }
+        } catch (err) {
+            showNotification('Error: ' + err.message, false);
+        }
+    });
+
+    function showNotification(msg, success = true) {
+        const notif = document.getElementById('notification');
+        const text = document.getElementById('notifText');
+        text.textContent = msg;
+        notif.className = 'notification ' + (success ? 'success' : 'error') + ' show';
+        setTimeout(() => notif.classList.remove('show'), 3000);
+    }
+</script>
+</body>
+</html>

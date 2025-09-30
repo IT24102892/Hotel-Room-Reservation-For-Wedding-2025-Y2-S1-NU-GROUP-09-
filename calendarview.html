@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar View - Luxury Haven Hotel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #c19a6b;
+            --secondary: #1a1a2e;
+            --light: #f9f9f9;
+            --muted: #6c757d;
+            --danger: #dc3545;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            background: #f5f7fb;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h2 {
+            font-size: 28px;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #666;
+        }
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .filter-bar select,
+        .filter-bar input {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            min-width: 160px;
+        }
+        .filter-bar button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .filter-bar button:hover {
+            background: #a57c51;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .card img, .no-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .no-image {
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 14px;
+        }
+        .card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-title { font-size: 20px; font-weight: 700; color: var(--secondary); margin-bottom: 8px; }
+        .card-subtitle { font-size: 14px; color: #777; margin-bottom: 12px; }
+        .card-description { flex-grow: 1; color: #555; font-size: 14px; margin-bottom: 15px; }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #666;
+            border-top: 1px solid #eee;
+            padding-top: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .date { font-weight: bold; color: var(--primary); }
+        .action-btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .book-btn { background: var(--primary); color: #fff; }
+        .book-btn:hover { background: #a57c51; }
+        .select-btn { background: var(--muted); color: #fff; }
+        .select-btn:hover { background: #555; }
+        .error { color: var(--danger); font-size: 14px; text-align: center; margin-bottom: 20px; display: none; }
+        .footer { text-align: center; color: #666; font-size: 12px; margin-top: 30px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2><i class="fas fa-calendar-alt"></i> Calendar View</h2>
+        <p>Browse upcoming weddings and events at Luxury Haven Hotel.</p>
+    </div>
+
+    <div class="error" id="errorMessage"></div>
+
+    <div class="filter-bar">
+        <select id="weddingTypeFilter">
+            <option value="">All Wedding Types</option>
+            <option value="Hindu">Hindu</option>
+            <option value="Muslim">Muslim</option>
+            <option value="Christian">Christian</option>
+        </select>
+        <input type="date" id="dateFilter">
+        <select id="monthFilter">
+            <option value="">All Months</option>
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
+        <button onclick="applyFilters()">Apply</button>
+    </div>
+
+    <div class="grid" id="calendarGrid">
+        <p style="grid-column:1/-1; text-align:center; color:#999;">Loading events...</p>
+    </div>
+</div>
+
+<div class="footer">
+    Last updated: Thursday, September 18, 2025, 04:07 PM IST
+</div>
+
+<script>
+    async function fetchCalendarview(weddingType, date, month) {
+        try {
+            const params = new URLSearchParams();
+            if (weddingType) params.append('weddingType', weddingType);
+            if (date) params.append('date', date);
+            if (month) params.append('month', month);
+
+            const response = await fetch(`http://localhost:8080/api/calendarview/filter?${params.toString()}`);
+            const calendarview = await response.json();
+            if (!Array.isArray(calendarview)) throw new Error('Expected an array');
+
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            if (calendarview.length === 0) {
+                grid.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:#666;">
+        <i class="fas fa-door-open"></i> No events found
+      </p>`;
+                return;
+            }
+
+            calendarview.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+        ${item.image
+                    ? `<img src="${item.image}" alt="Event Image">`
+                    : `<div class="no-image">No Image</div>`}
+        <div class="card-content">
+          <div class="card-title">${item.wedingtype || 'Event'}</div>
+          <div class="card-subtitle"><i class="fas fa-map-marker-alt"></i> ${item.location || 'N/A'}</div>
+          <div class="card-description">${item.discription || 'No description available.'}</div>
+          <div class="card-footer">
+            <span class="date"><i class="fas fa-calendar-day"></i> ${item.date || 'N/A'}</span>
+            <span><i class="fas fa-clock"></i> ${item.time || 'N/A'}</span>
+          </div>
+          <div class="card-footer">
+            <button class="action-btn book-btn" onclick="bookNow(${item.id})"><i class="fas fa-calendar-check"></i> Book Now</button>
+            <button class="action-btn select-btn" onclick="selectPackage(${item.id})"><i class="fas fa-gift"></i> Select Package</button>
+          </div>
+        </div>
+      `;
+                grid.appendChild(card);
+            });
+        } catch (error) {
+            showError('Failed to load calendar view: ' + error.message);
+        }
+    }
+
+    function applyFilters() {
+        const weddingType = document.getElementById('weddingTypeFilter').value;
+        const date = document.getElementById('dateFilter').value;
+        const month = document.getElementById('monthFilter').value;
+        fetchCalendarview(weddingType, date, month);
+    }
+
+    function bookNow(id) {
+        if (id) window.location.href = `/api/calendarview/book/${id}`;
+    }
+
+    function selectPackage(id) {
+        if (id) window.location.href = `/api/calendarview/select-package/${id}`;
+    }
+
+    function showError(message) {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+        setTimeout(() => errorDiv.style.display = 'none', 5000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => fetchCalendarview());
+</script>
+</body>
+</html>

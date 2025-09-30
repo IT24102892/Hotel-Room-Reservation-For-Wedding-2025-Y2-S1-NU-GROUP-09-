@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luxury Haven - Guest Registration</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    :root {
+      --primary: #c19a6b;
+      --secondary: #1a1a2e;
+      --accent: #e6d2b5;
+      --light: #f9f9f9;
+      --dark: #16213e;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+    }
+
+    body {
+      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+      url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      display: flex;
+      width: 100%;
+      max-width: 1000px;
+      min-height: 600px;
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.8s ease;
+    }
+
+    .brand-side {
+      flex: 1;
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--dark) 100%);
+      color: white;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-side::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80') no-repeat center center/cover;
+      opacity: 0.2;
+    }
+
+    .brand-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .logo-icon {
+      font-size: 32px;
+      color: var(--primary);
+      margin-right: 15px;
+    }
+
+    .logo-text {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .logo-text span {
+      color: var(--primary);
+    }
+
+    .brand-side h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: var(--accent);
+    }
+
+    .brand-side p {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    .features {
+      list-style: none;
+    }
+
+    .features li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      font-size: 15px;
+    }
+
+    .features i {
+      color: var(--primary);
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    .form-side {
+      flex: 1.2;
+      padding: 40px;
+      overflow-y: auto;
+      background: white;
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-header h2 {
+      font-size: 28px;
+      color: var(--secondary);
+      margin-bottom: 10px;
+    }
+
+    .form-header p {
+      color: #666;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group.full-width {
+      grid-column: span 2;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--secondary);
+    }
+
+    .input-with-icon {
+      position: relative;
+    }
+
+    .input-with-icon i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 15px 15px 15px 45px;
+      border: 2px solid #e6e6e6;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(193, 154, 107, 0.2);
+    }
+
+    .error {
+      color: var(--danger);
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .terms {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      grid-column: span 2;
+    }
+
+    .terms input {
+      width: auto;
+      margin-right: 10px;
+    }
+
+    .terms label {
+      margin: 0;
+      font-weight: normal;
+    }
+
+    .terms a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: var(--primary);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      grid-column: span 2;
+    }
+
+    .btn-submit:hover {
+      background: #a57c51;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(193, 154, 107, 0.4);
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      grid-column: span 2;
+    }
+
+    .login-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyshake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .shake {
+      animation: shake 0.5s ease;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+        max-width: 600px;
+      }
+
+      .brand-side {
+        padding: 30px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.full-width, .terms, .btn-submit, .login-link {
+        grid-column: span 1;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .form-side {
+        padding: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="brand-side">
+    <div class="brand-content">
+      <div class="logo">
+        <i class="fas fa-hotel logo-icon"></i>
+        <div class="logo-text">Luxury <span>Haven</span></div>
+      </div>
+      <h1>Create Your Account</h1>
+      <p>Join our exclusive community of travelers and experience world-class hospitality at its finest.</p>
+      <ul class="features">
+        <li><i class="fas fa-check-circle"></i> Best price guarantee</li>
+        <li><i class="fas fa-check-circle"></i> Free cancellation up to 24 hours</li>
+        <li><i class="fas fa-check-circle"></i> Exclusive member discounts</li>
+        <li><i class="fas fa-check-circle"></i> Priority customer support</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="form-side">
+    <div class="form-header">
+      <h2>Create Account</h2>
+      <p>Please fill in your details to create an account</p>
+    </div>
+
+    <form id="registerForm">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <div class="input-with-icon">
+            <i class="fas fa-user"></i>
+            <input type="text" id="username" name="username" required>
+          </div>
+          <span class="error" id="usernameError">Username is required</span>
+        </div>
+
+        <div class="form-group">
+          <label for="age">Age</label>
+          <div class="input-with-icon">
+            <i class="fas fa-birthday-cake"></i>
+            <input type="number" id="age" name="age" required min="1">
+          </div>
+          <span class="error" id="ageError">Age must be a positive number</span>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <div class="input-with-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <span class="error" id="emailError">Valid email is required</span>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <div class="input-with-icon">
+            <i class="fas fa-phone"></i>
+            <input type="text" id="phone" name="phone" required>
+          </div>
+          <span class="error" id="phoneError">Phone number is required</span>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-with-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" name="password" required>
+          </div>
+          <span class="error" id="passwordError">Password is required</span>
+        </div>
+
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <div class="input-with-icon">
+            <i class="fas fa-venus-mars"></i>
+            <select id="gender" name="gender" required>
+              <option value="">Select Gender</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <span class="error" id="genderError">Gender is required</span>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="address">Address</label>
+          <div class="input-with-icon">
+            <i class="fas fa-home"></i>
+            <input type="text" id="address" name="address" required>
+          </div>
+          <span class="error" id="addressError">Address is required</span>
+        </div>
+
+        <div class="terms">
+          <input type="checkbox" id="terms" name="terms" required>
+          <label for="terms">I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></label>
+          <span class="error" id="termsError">You must accept the terms</span>
+        </div>
+
+        <button type="submit" class="btn-submit">Create Account</button>
+
+        <div class="login-link">
+          Already have an account? <a href="#">Sign In</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = {
+      username: form.username.value,
+      password: form.password.value,
+      email: form.email.value,
+      phone: form.phone.value,
+      address: form.address.value,
+      gender: form.gender.value,
+      age: parseInt(form.age.value)
+    };
+
+    // Basic client-side validation
+    let isValid = true;
+    document.querySelectorAll('.error').forEach(error => error.style.display = 'none');
+
+    if (!formData.username) {
+      document.getElementById('usernameError').style.display = 'block';
+      document.getElementById('username').classList.add('shake');
+      isValid = false;
+    }
+
+    if (!formData.password) {
+      document.getElementById('passwordError').style.display = 'block';
+      document.getElementById('password').classList.add('shake');
+      isValid = false;
+    }
+
+    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
+      document.getElementById('emailError').style.display = 'block';
+      document.getElementById('email').classList.add('shake');
+      isValid = false;
+    }
+
+    if (!formData.phone) {
+      document.getElementById('phoneError').style.display = 'block';
+      document.getElementById('phone').classList.add('shake');
+      isValid = false;
+    }
+
+    if (!formData.address) {
+      document.getElementById('addressError').style.display = 'block';
+      document.getElementById('address').classList.add('shake');
+      isValid = false;
+    }
+
+    if (!formData.gender) {
+      document.getElementById('genderError').style.display = 'block';
+      document.getElementById('gender').classList.add('shake');
+      isValid = false;
+    }
+
+    if (!formData.age || formData.age <= 0) {
+      document.getElementById('ageError').style.display = 'block';
+      document.getElementById('age').classList.add('shake');
+      isValid = false;
+    }
+
+    if (!form.terms.checked) {
+      document.getElementById('termsError').style.display = 'block';
+      isValid = false;
+    }
+
+    // Remove shake animation after delay
+    setTimeout(() => {
+      document.querySelectorAll('.shake').forEach(el => {
+        el.classList.remove('shake');
+      });
+    }, 500);
+
+    if (!isValid) return;
+
+    // Show loading state
+    const submitBtn = document.querySelector('.btn-submit');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Creating Account...';
+    submitBtn.disabled = true;
+
+    try {
+      const response = await fetch('http://localhost:8080/api/users/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        // Success animation
+        submitBtn.style.background = 'var(--success)';
+        submitBtn.textContent = 'Registration Successful!';
+
+        setTimeout(() => {
+          alert('Registration successful! Welcome to Luxury Haven.');
+          form.reset();
+          submitBtn.style.background = '';
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+        }, 1500);
+      } else {
+        const error = await response.json();
+        throw new Error(error.message || 'Registration failed');
+      }
+    } catch (error) {
+      alert('Error: ' + error.message);
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+    }
+  });
+
+  // Add input event listeners to remove error styles when user starts typing
+  document.querySelectorAll('input, select').forEach(input => {
+    input.addEventListener('input', function() {
+      this.style.borderColor = '#e6e6e6';
+      const errorId = this.id + 'Error';
+      if (document.getElementById(errorId)) {
+        document.getElementById(errorId).style.display = 'none';
+      }
+    });
+  });
+</script>
+</body>
+</html>
