@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Edit Photographer</title>
+
+    <!-- Optional: Bootstrap for quick styling -->
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
+    <style>
+        body { background:#f7f7fb; }
+        .card { border:0; border-radius:1rem; box-shadow:0 10px 20px rgba(0,0,0,.08); }
+        .form-label { font-weight:600; }
+    </style>
+</head>
+<body>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card p-4 p-md-5">
+                <div class="d-flex align-items-center mb-4">
+                    <h1 class="h3 mb-0">Edit Photographer</h1>
+                    <span class="ms-auto text-muted" th:text="'#' + ${photographer.id}"></span>
+                </div>
+
+                <!-- Form -->
+                <form th:action="@{|/photographers/${photographer.id}/edit|}"
+                      th:object="${photographer}"
+                      method="post" novalidate>
+
+                    <!-- CSRF (Spring Security) -->
+                    <input type="hidden" th:if="${_csrf != null}"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}" />
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Name</label>
+                            <input id="name" class="form-control" type="text"
+                                   th:field="*{name}" required minlength="2" maxlength="100"
+                                   placeholder="e.g., Vipooshan" />
+                            <div class="form-text">Full display name.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input id="email" class="form-control" type="email"
+                                   th:field="*{email}" required maxlength="100"
+                                   placeholder="name@example.com" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input id="phone" class="form-control" type="text"
+                                   th:field="*{phone}" required maxlength="30"
+                                   placeholder="+94xxxxxxxxx" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="location" class="form-label">Location</label>
+                            <input id="location" class="form-control" type="text"
+                                   th:field="*{location}" required maxlength="100"
+                                   placeholder="e.g., Jaffna" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="experience" class="form-label">Experience (years)</label>
+                            <input id="experience" class="form-control" type="number"
+                                   th:field="*{experience}" required min="0" max="80" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="price" class="form-label">Price</label>
+                            <!-- If your entity uses Integer, keep step="1". If BigDecimal, you can use step="0.01". -->
+                            <input id="price" class="form-control" type="number"
+                                   th:field="*{price}" required min="0" step="1" />
+                            <div class="form-text">Base package price.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="image" class="form-label">Image URL</label>
+                            <input id="image" class="form-control" type="url"
+                                   th:field="*{image}" placeholder="https://..." />
+                            <div class="form-text">Public link to profile image.</div>
+                        </div>
+
+                        <div class="col-12 mt-4 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                            <a class="btn btn-outline-secondary" th:href="@{/viewPhotographers}">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Preview (optional) -->
+                <div class="mt-4" th:if="*{image}">
+                    <div class="text-muted mb-2">Image preview:</div>
+                    <img th:src="*{image}" alt="Photographer image"
+                         class="img-fluid rounded" style="max-height:240px; object-fit:cover;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Optional Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

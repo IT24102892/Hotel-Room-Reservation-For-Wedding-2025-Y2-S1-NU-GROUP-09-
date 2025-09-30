@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Photographer</title>
+
+    <!-- Tailwind (kept) -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Icons (kept) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Theme fonts (visual only) -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ======================= Design Tokens ======================= */
+        :root{
+            /* Indian wedding – light blue & soft gold */
+            --color-bg: #EAF4FF;              /* page background */
+            --color-bg-soft: #F6FAFF;         /* panels */
+            --color-primary: #6BB6FF;         /* light blue */
+            --color-primary-600: #3A93F3;     /* deeper blue */
+            --color-accent: #D4AF37;          /* soft gold */
+            --color-ink: #0F1B2A;             /* body text */
+            --color-ink-soft: #3B4D66;        /* secondary text */
+            --ring: #D4AF37;                  /* focus ring */
+
+            --shadow-soft: 0 6px 20px rgba(15,27,42,.08), 0 1px 0 rgba(15,27,42,.03) inset;
+            --shadow-elev: 0 18px 46px rgba(15,27,42,.14);
+            --grad-gold-soft: linear-gradient(135deg, rgba(212,175,55,0.00) 0%, rgba(212,175,55,0.22) 100%);
+
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-2xl: 22px;
+            --ring-w: 2px;
+
+            --ff-display: "Playfair Display","Merriweather",ui-serif,Georgia,serif;
+            --ff-body: "Inter","Poppins",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+
+            /* Corner motifs (gold) as data-URIs */
+            --svg-gold-mandala: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'><g opacity='0.18' stroke='%23D4AF37' stroke-width='1'><circle cx='50' cy='50' r='28'/><path d='M50 6 L58 26 L80 28 L62 40 L66 62 L50 50 L34 62 L38 40 L20 28 L42 26 Z'/></g></svg>");
+            --svg-gold-paisley: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'><g opacity='0.18'><path d='M65 18c-24 0-43 19-43 43s19 43 43 43c19 0 34-15 34-34 0-8-3-16-8-22 1 18-14 32-32 32-17 0-31-13-31-30 0-18 14-32 32-32 13 0 23 5 32 13-9-9-21-13-35-13z' stroke='%23D4AF37' stroke-width='1.5'/></g></svg>");
+        }
+
+        /* ======================= Base ======================= */
+        *{ box-sizing: border-box; }
+        html, body{
+            min-height: 100vh;
+            margin: 0;
+            color: var(--color-ink);
+            font-family: var(--ff-body);
+            background:
+                    radial-gradient(1200px 600px at 100% -20%, rgba(58,147,243,0.16), transparent 60%),
+                    radial-gradient(1200px 600px at -10% 120%, rgba(212,175,55,0.14), transparent 60%),
+                    var(--color-bg);
+        }
+
+        /* Subtle festive particles (toned to blue/gold) */
+        body::before{
+            content:"";
+            position: fixed; inset: 0; z-index: -1;
+            background-image:
+                    radial-gradient(circle at 20% 80%, rgba(59,77,102,0.08) 2px, transparent 2px),
+                    radial-gradient(circle at 80% 20%, rgba(212,175,55,0.10) 3px, transparent 3px),
+                    radial-gradient(circle at 40% 40%, rgba(58,147,243,0.10) 1.5px, transparent 1.5px);
+            background-size: 150px 150px, 120px 120px, 100px 100px;
+            animation: floatParticles 30s linear infinite;
+        }
+
+        /* Container */
+        .container{
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 30px;
+            animation: floatUp 520ms cubic-bezier(.22,1,.36,1) both;
+        }
+
+        /* Form shell with glass + thin gold border */
+        .form-container{
+            background: linear-gradient(180deg, rgba(255,255,255,.80), rgba(255,255,255,.96));
+            border: 1px solid rgba(212,175,55,.22);
+            border-radius: var(--radius-2xl);
+            padding: 40px;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: clip;
+            backdrop-filter: saturate(140%) blur(10px);
+        }
+        .form-container::before,
+        .form-container::after{
+            content:"";
+            position:absolute; width:160px; height:160px; pointer-events:none; opacity:.4;
+            background-size: contain; background-repeat:no-repeat; z-index:-1;
+        }
+        .form-container::before{ top:-18px; left:-18px; background-image: var(--svg-gold-paisley); transform: rotate(-8deg); }
+        .form-container::after{ bottom:-22px; right:-22px; background-image: var(--svg-gold-mandala); transform: rotate(8deg); }
+
+        /* Heading */
+        h1{
+            font-family: var(--ff-display);
+            font-weight: 700;
+            font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.5rem);
+            text-align: center;
+            margin-bottom: 1.25rem;
+            letter-spacing: .2px;
+            color: var(--color-ink);
+            position: relative;
+        }
+        h1 span.title-pill{
+            display:inline-block;
+            padding: 8px 14px;
+            border-radius: var(--radius-md);
+            background: var(--grad-gold-soft);
+        }
+
+        /* Form groups */
+        .form-group{ margin-bottom: 1.25rem; }
+        label{
+            display:flex; align-items:center; gap:.5rem;
+            font-weight: 600; color: var(--color-ink);
+            margin-bottom: 8px;
+        }
+        label i{ color: var(--color-primary-600); }
+
+        /* Inputs */
+        .input-wrapper{ position: relative; }
+        input{
+            width:100%;
+            padding: 14px 44px 14px 16px;
+            border: 1px solid rgba(15,27,42,.14);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #fff;
+            color: var(--color-ink);
+            box-shadow: inset 0 2px 6px rgba(15,27,42,.04);
+            transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+        }
+        input::placeholder{ color: color-mix(in oklab, var(--color-ink-soft) 58%, white); }
+        input:hover{ border-color: rgba(58,147,243,.35); }
+        input:focus{
+            outline: none;
+            border-color: rgba(212,175,55,.6);
+            box-shadow: 0 0 0 var(--ring-w) var(--ring), inset 0 2px 6px rgba(15,27,42,.04);
+            transform: translateY(-1px);
+        }
+
+        /* trailing icon */
+        .input-icon{
+            position:absolute; right: 14px; top: 50%; transform: translateY(-50%);
+            font-size: 1.05rem; color: #9CA3AF; pointer-events:none; transition: color 180ms ease;
+        }
+        input:focus + .input-icon{ color: var(--color-primary-600); }
+
+        /* Validity tints (soft to meet AA) */
+        input:invalid{ border-color: rgba(220,53,69,.6); }
+        input:valid{ border-color: rgba(16,185,129,.6); }
+
+        /* Button */
+        .submit-btn{
+            width: 100%;
+            border: 1px solid rgba(212,175,55,.25);
+            border-radius: var(--radius-lg);
+            background: var(--color-primary);
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.05rem;
+            padding: 16px 22px;
+            display:inline-flex; align-items:center; justify-content:center; gap:.6rem;
+            cursor: pointer;
+            transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+            box-shadow: 0 2px 0 rgba(255,255,255,.6) inset, 0 10px 24px rgba(58,147,243,.24);
+            text-transform: uppercase; letter-spacing: .6px;
+        }
+        .submit-btn:hover{
+            background: var(--color-primary-600);
+            background-image: linear-gradient(180deg, rgba(212,175,55,.18), rgba(212,175,55,.06));
+            transform: translateY(-1px);
+            box-shadow: 0 2px 0 rgba(255,255,255,.7) inset, 0 12px 30px rgba(58,147,243,.3);
+        }
+        .submit-btn:focus-visible{
+            outline: none;
+            box-shadow: 0 0 0 calc(var(--ring-w) + 1px) var(--ring), 0 12px 30px rgba(58,147,243,.28);
+        }
+
+        /* Image preview frame */
+        .image-preview{
+            width:100%; max-width: 220px; height: 160px;
+            border: 2px dashed rgba(15,27,42,.25);
+            border-radius: 12px; display:none; align-items:center; justify-content:center;
+            overflow:hidden; transition: border-color 180ms ease, transform 180ms ease;
+            background: var(--color-bg-soft);
+        }
+        .image-preview.show{ display:flex; }
+        .image-preview img{ width:100%; height:100%; object-fit: cover; }
+
+        /* Focus visibility (global) */
+        :focus-visible{ outline: none; box-shadow: 0 0 0 var(--ring-w) var(--ring) !important; border-radius: 12px; }
+
+        /* Animations & motion prefs */
+        @keyframes floatParticles{
+            0% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+            33% { transform: translateY(-18px) translateX(18px) rotate(120deg); }
+            66% { transform: translateY(18px) translateX(-18px) rotate(240deg); }
+            100%{ transform: translateY(0px) translateX(0px) rotate(360deg); }
+        }
+        @keyframes floatUp{ from{ transform: translateY(8px); opacity: 0 } to{ transform: translateY(0); opacity: 1 } }
+
+        @media (prefers-reduced-motion: reduce){
+            *,*::before,*::after{
+                animation-duration: 1ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 1ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Responsive refinements */
+        @media (max-width: 768px){
+            .container{ padding: 20px; }
+            .form-container{ padding: 28px 20px; }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+<div class="container mx-auto p-4">
+    <div class="form-container">
+        <h1 class="text-2xl font-bold mb-4"><span class="title-pill">Add New Photographer</span></h1>
+
+        <!-- Structure, IDs, names, and business logic unchanged -->
+        <form th:action="@{/addPhotographer}" th:object="${photographer}" method="post" class="space-y-4" id="photographerForm">
+
+            <div class="form-group">
+                <label for="name" class="field-name block text-sm font-medium text-gray-700">
+                    <i class="fas fa-user" aria-hidden="true"></i> Full Name
+                </label>
+                <div class="input-wrapper">
+                    <input type="text" id="name" th:field="*{name}" placeholder="Enter photographer's name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    <i class="input-icon fas fa-user" aria-hidden="true"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone" class="field-phone block text-sm font-medium text-gray-700">
+                    <i class="fas fa-phone" aria-hidden="true"></i> Phone Number
+                </label>
+                <div class="input-wrapper">
+                    <input type="text" id="phone" th:field="*{phone}" placeholder="Enter phone number" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    <i class="input-icon fas fa-phone" aria-hidden="true"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="field-email block text-sm font-medium text-gray-700">
+                    <i class="fas fa-envelope" aria-hidden="true"></i> Email Address
+                </label>
+                <div class="input-wrapper">
+                    <input type="email" id="email" th:field="*{email}" placeholder="Enter email address" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    <i class="input-icon fas fa-envelope" aria-hidden="true"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="experience" class="field-experience block text-sm font-medium text-gray-700">
+                    <i class="fas fa-award" aria-hidden="true"></i> Experience (Years)
+                </label>
+                <div class="input-wrapper">
+                    <input type="number" id="experience" th:field="*{experience}" placeholder="Years of experience" min="0" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    <i class="input-icon fas fa-award" aria-hidden="true"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="location" class="field-location block text-sm font-medium text-gray-700">
+                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i> Location
+                </label>
+                <div class="input-wrapper">
+                    <input type="text" id="location" th:field="*{location}" placeholder="Enter location/city" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    <i class="input-icon fas fa-map-marker-alt" aria-hidden="true"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="image" class="field-image block text-sm font-medium text-gray-700">
+                    <i class="fas fa-image" aria-hidden="true"></i> Profile Image URL
+                </label>
+                <div class="input-wrapper">
+                    <input type="url" id="image" th:field="*{image}" placeholder="Enter image URL" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    <i class="input-icon fas fa-image" aria-hidden="true"></i>
+                </div>
+                <div class="image-preview" id="imagePreview">
+                    <img id="previewImg" src="" alt="Preview">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="price" class="field-price block text-sm font-medium text-gray-700">
+                    <i class="fas fa-dollar-sign" aria-hidden="true"></i> Price per Event
+                </label>
+                <div class="input-wrapper">
+                    <input type="number" id="price" th:field="*{price}" placeholder="Enter price" min="0" step="0.01" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                    <i class="input-icon fas fa-dollar-sign" aria-hidden="true"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                <i class="fas fa-camera" aria-hidden="true"></i>
+                Add Photographer
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- JS (unchanged business logic; only visuals enhanced by CSS above) -->
+<script>
+    // Image preview functionality
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+
+    imageInput.addEventListener('input', function() {
+        const url = this.value;
+        if (url) {
+            previewImg.src = url;
+            imagePreview.classList.add('show');
+            previewImg.onload = function() {
+                imagePreview.style.borderColor = '#10b981';
+            };
+            previewImg.onerror = function() {
+                imagePreview.style.borderColor = '#ef4444';
+            };
+        } else {
+            imagePreview.classList.remove('show');
+        }
+    });
+
+    // Form validation with visual feedback
+    const form = document.getElementById('photographerForm');
+    const inputs = form.querySelectorAll('input[required]');
+
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.classList.remove('success');
+            } else if (this.validity.valid) {
+                this.classList.add('success');
+            }
+        });
+
+        input.addEventListener('input', function() {
+            if (this.validity.valid && this.value.trim() !== '') {
+                this.classList.add('success');
+            } else {
+                this.classList.remove('success');
+            }
+        });
+    });
+
+    // Form submission with loading state
+    form.addEventListener('submit', function(e) {
+        const submitBtn = form.querySelector('.submit-btn');
+        submitBtn.classList.add('loading');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Adding Photographer...';
+        setTimeout(() => { /* submit proceeds normally */ }, 500);
+    });
+
+    // Sparkles (kept; purely decorative)
+    function createSparkles(element) {
+        for (let i = 0; i < 5; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.style.position = 'absolute';
+            sparkle.style.width = '4px';
+            sparkle.style.height = '4px';
+            sparkle.style.background = 'var(--color-primary-600)';
+            sparkle.style.borderRadius = '50%';
+            sparkle.style.pointerEvents = 'none';
+            sparkle.style.left = Math.random() * element.offsetWidth + 'px';
+            sparkle.style.top = Math.random() * element.offsetHeight + 'px';
+            sparkle.style.animation = 'sparkle 1.5s ease-out forwards';
+            element.style.position = 'relative';
+            element.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 1500);
+        }
+    }
+
+    const sparkleStyle = document.createElement('style');
+    sparkleStyle.textContent = `
+      @keyframes sparkle {
+        0%   { transform: scale(0) rotate(0deg);   opacity: 1; }
+        50%  { transform: scale(1) rotate(180deg); opacity: 1; }
+        100% { transform: scale(0) rotate(360deg); opacity: 0; }
+      }
+    `;
+    document.head.appendChild(sparkleStyle);
+
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            if (this.validity.valid && this.value.trim() !== '') {
+                createSparkles(this.parentElement);
+            }
+        });
+    });
+</script>
+</body>
+</html>

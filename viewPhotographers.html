@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Photographers</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                    radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 2px, transparent 2px),
+                    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 3px, transparent 3px),
+                    radial-gradient(circle at 40% 40%, rgba(255,255,255,0.06) 1px, transparent 1px);
+            background-size: 150px 150px, 100px 100px, 80px 80px;
+            animation: floatParticles 30s infinite linear;
+            z-index: -1;
+        }
+
+        @keyframes floatParticles {
+            0% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) translateX(20px) rotate(120deg); }
+            66% { transform: translateY(20px) translateX(-20px) rotate(240deg); }
+            100% { transform: translateY(0px) translateX(0px) rotate(360deg); }
+        }
+
+        /* Enhanced Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+            animation: containerSlideUp 1.2s ease;
+        }
+
+        @keyframes containerSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Enhanced Header */
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            position: relative;
+            animation: headerFloat 1.2s ease;
+        }
+
+        h1::before {
+            content: '📸';
+            position: absolute;
+            left: -70px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2.5rem;
+            animation: cameraRotate 3s ease-in-out infinite;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            border-radius: 2px;
+            animation: headerUnderline 1.5s ease 0.5s both;
+        }
+
+        @keyframes headerUnderline {
+            from { width: 0; }
+            to { width: 200px; }
+        }
+
+        @keyframes headerFloat {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes cameraRotate {
+            0%, 100% { transform: translateY(-50%) rotate(0deg); }
+            50% { transform: translateY(-50%) rotate(15deg); }
+        }
+
+        /* Enhanced Add Button */
+        .add-btn {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 2rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 25px rgba(16,185,129,0.3);
+            position: relative;
+            overflow: hidden;
+            animation: addBtnSlide 1s ease 0.3s both;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .add-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.4s ease;
+        }
+
+        .add-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(16,185,129,0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        @keyframes addBtnSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Enhanced Grid */
+        .photographers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            animation: gridFadeIn 1s ease 0.6s both;
+        }
+
+        @keyframes gridFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhanced Photographer Cards */
+        .photographer-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            animation: cardSlideUp 0.8s ease both;
+        }
+
+        .photographer-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(102,126,234,0.05), rgba(247,148,164,0.05));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 0;
+        }
+
+        .photographer-card:hover::before {
+            opacity: 1;
+        }
+
+        .photographer-card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+        }
+
+        .photographer-card:nth-child(even) {
+            animation-delay: 0.1s;
+        }
+
+        .photographer-card:nth-child(3n) {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes cardSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Enhanced Image */
+        .photographer-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            transition: all 0.5s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .photographer-card:hover .photographer-image {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        /* Enhanced Typography */
+        .photographer-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .photographer-name::before {
+            content: '👤';
+            font-size: 1.2rem;
+        }
+
+        .photographer-card:hover .photographer-name {
+            color: #667eea;
+        }
+
+        .photographer-info {
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        .photographer-info i {
+            color: #667eea;
+            width: 20px;
+            font-size: 1rem;
+        }
+
+        .photographer-card:hover .photographer-info {
+            transform: translateX(5px);
+        }
+
+        /* Enhanced Request Button */
+        .request-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 6px 20px rgba(102,126,234,0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        .request-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.4s ease;
+        }
+
+        .request-btn:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+
+        .request-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(102,126,234,0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Price Highlighting */
+        .price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #10b981;
+            background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.2));
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin: 10px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .price::before {
+            content: '💰';
+            font-size: 1rem;
+        }
+
+        /* Experience Badge */
+        .experience {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .experience::before {
+            content: '⭐';
+        }
+
+        /* Empty State */
+        .empty-state {
+            grid-column: 1/-1;
+            text-align: center;
+            color: white;
+            padding: 80px 20px;
+            font-size: 1.2rem;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        /* Loading Animation */
+        .loading-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            h1::before {
+                left: -50px;
+                font-size: 2rem;
+            }
+
+            .photographers-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .add-btn {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+
+            .photographer-card {
+                padding: 20px;
+            }
+        }
+
+        /* Sparkle effect */
+        @keyframes sparkle {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1) rotate(180deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Hover effects for better interactivity */
+        .photographer-card:hover .photographer-image {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Card reveal animation */
+        .card-reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .card-reveal.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Floating action button style for add button */
+        .add-btn {
+            position: relative;
+        }
+
+        .add-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 25px;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .add-btn:hover::after {
+            opacity: 1;
+            animation: shimmer 1s ease;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+<div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">Photographers List</h1>
+    <a href="/addPhotographer" class="add-btn bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 mb-4 inline-block">
+        <i class="fas fa-plus"></i>
+        Add New Photographer
+    </a>
+
+    <div class="photographers-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div th:each="photographer : ${photographers}" class="photographer-card bg-white p-4 rounded-md shadow-md">
+            <img th:src="${photographer.image}" alt="Photographer Image" class="photographer-image w-full h-48 object-cover rounded-md mb-4">
+
+            <h2 th:text="${photographer.name}" class="photographer-name text-xl font-semibold"></h2>
+
+            <div class="photographer-info" th:text="'Phone: ' + ${photographer.phone}">
+                <i class="fas fa-phone"></i>
+                <span th:text="${photographer.phone}"></span>
+            </div>
+
+            <div class="photographer-info" th:text="'Email: ' + ${photographer.email}">
+                <i class="fas fa-envelope"></i>
+                <span th:text="${photographer.email}"></span>
+            </div>
+
+            <div class="photographer-info">
+                <i class="fas fa-award"></i>
+                <span class="experience" th:text="${photographer.experience} + ' years'"></span>
+            </div>
+
+            <div class="photographer-info" th:text="'Location: ' + ${photographer.location}">
+                <i class="fas fa-map-marker-alt"></i>
+                <span th:text="${photographer.location}"></span>
+            </div>
+
+            <div class="price" th:text="'$' + ${photographer.price}">
+                <span th:text="'$' + ${photographer.price}"></span>
+            </div>
+
+            <a th:href="@{/requestForm(photographerId=${photographer.id})}"
+               class="request-btn bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-2 inline-block">
+                <i class="fas fa-paper-plane"></i>
+                Send Request
+            </a>
+        </div>
+
+        <!-- Empty state when no photographers -->
+        <div th:if="${photographers.isEmpty()}" class="empty-state">
+            <i class="fas fa-camera"></i>
+            <p>No photographers available at the moment.</p>
+            <p class="text-sm mt-2 opacity-75">Be the first to add a photographer to our platform!</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add sparkle effect to buttons
+    function createSparkles(element) {
+        for (let i = 0; i < 5; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.style.position = 'absolute';
+            sparkle.style.width = '4px';
+            sparkle.style.height = '4px';
+            sparkle.style.background = 'white';
+            sparkle.style.borderRadius = '50%';
+            sparkle.style.pointerEvents = 'none';
+            sparkle.style.left = Math.random() * element.offsetWidth + 'px';
+            sparkle.style.top = Math.random() * element.offsetHeight + 'px';
+            sparkle.style.animation = 'sparkle 1.5s ease-out forwards';
+            element.style.position = 'relative';
+            element.appendChild(sparkle);
+
+            setTimeout(() => sparkle.remove(), 1500);
+        }
+    }
+
+    // Add sparkle effect on button hover
+    document.querySelectorAll('.request-btn, .add-btn').forEach(btn => {
+        btn.addEventListener('mouseenter', function() {
+            createSparkles(this);
+        });
+    });
+
+    // Add intersection observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('show');
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    // Observe photographer cards for scroll animations
+    document.querySelectorAll('.photographer-card').forEach(card => {
+        card.classList.add('card-reveal');
+        observer.observe(card);
+    });
+
+    // Image loading error handling
+    document.querySelectorAll('.photographer-image').forEach(img => {
+        img.addEventListener('error', function() {
+            this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200"><rect width="300" height="200" fill="%23f3f4f6"/><text x="150" y="100" font-family="Arial" font-size="16" fill="%236b7280" text-anchor="middle" dy="0.3em">📷 Image Not Available</text></svg>';
+            this.style.filter = 'grayscale(1)';
+        });
+    });
+
+    // Add loading animation while images load
+    document.querySelectorAll('.photographer-image').forEach(img => {
+        if (!img.complete) {
+            img.parentElement.classList.add('loading-card');
+            img.addEventListener('load', function() {
+                this.parentElement.classList.remove('loading-card');
+            });
+        }
+    });
+
+    // Add click ripple effect
+    document.querySelectorAll('.photographer-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            const ripple = document.createElement('div');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+
+            ripple.style.position = 'absolute';
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.style.background = 'rgba(102,126,234,0.3)';
+            ripple.style.borderRadius = '50%';
+            ripple.style.pointerEvents = 'none';
+            ripple.style.animation = 'ripple 0.6s ease-out';
+
+            this.appendChild(ripple);
+
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+
+    // Add ripple keyframes
+    const rippleStyle = document.createElement('style');
+    rippleStyle.textContent = `
+        @keyframes ripple {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(rippleStyle);
+</script>
+</body>
+</html>
